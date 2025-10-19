@@ -3,7 +3,7 @@
   services.searx = {
     enable = true;
     package = pkgs.searxng;
-#    redisCreateLocally = true;
+    redisCreateLocally = true;
     settings.server.secret_key = "test";
     settings.server.port = 8080;
     settings.server.bind_address = "127.0.0.1";
