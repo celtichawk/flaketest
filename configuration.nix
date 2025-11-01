@@ -215,12 +215,11 @@ espeak
 espeak-ng
 prismlauncher
 flite
-xfce.xfce4-whiskermenu-plugin
 alsa-utils
 xfce.mousepad
 nwg-drawer
 lxterminal
-#brave
+valkey
 xfce.xfce4-notifyd
 xwayland-satellite
 nodejs
