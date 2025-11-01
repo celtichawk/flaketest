@@ -1,6 +1,6 @@
 { config, pkgs, ... }:
 {
-  services.searx = {
+  services.searxng = {
     enable = true;
     package = pkgs.searxng;
     valkeyCreateLocally = true;
