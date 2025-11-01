@@ -195,7 +195,7 @@ libnotify
 file
 firefox
 distrobox
-(pidgin.override { plugins = [ purple-discord purple-plugin-pack ]; })
+(pidgin.override { plugins = [ pidginPackages.purple-discord PidginPackages.purple-plugin-pack ]; })
 appimage-run
 podman
 pipe-viewer
