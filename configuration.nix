@@ -247,7 +247,11 @@ programs.niri.enable = true;
    services.openssh.enable = true;
 #services.locate.enable = true;
 #services.mullvad-vpn.enable = true;
-services.ollama.enable = true;
+#services.ollama.enable = true;
+services.redis.enable = true;
+services.redis.port = 6379;
+services.redis.bind = "127.0.0.1";
+
 #services.open-webui.enable = true;
 #services.open-webui.port = 11111;
 #services.open-webui.host = "127.0.0.1";

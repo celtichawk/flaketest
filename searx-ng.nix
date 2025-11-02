@@ -5,7 +5,7 @@
     package = pkgs.searxng;
 
     # This spawns a local valkey instance automatically.
-    redisCreateLocally = false;
+    redisCreateLocally = true;
 
     settings = {
       server = {
@@ -16,7 +16,7 @@
       search.formats = [ "html" "json" "rss" ];
 
       # Connect searxng to that local valkey instance.
-      valkey.url = "valkey://localhost:6379/0";
+#      valkey.url = "valkey://localhost:6379/0";
     };
   };
 }
