@@ -190,6 +190,7 @@ unzip
 unrar
 p7zip
 git
+gh
 pulseaudio
 libnotify
 file
