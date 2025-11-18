@@ -204,8 +204,7 @@ mpv
 epub2txt2
     pkgs.epr
 pkgs.yt-dlp
-#calibre
-#koboldcpp
+brave
 steam-run
 w3m
 tesseract

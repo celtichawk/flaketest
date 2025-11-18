@@ -1,49 +1,43 @@
 {
-  description = "Your new nix config";
+  description = "Your NixOS configuration with Home Manager and Flatpak";
 
   inputs = {
     # Nixpkgs
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=latest";
-    # Home manager
+
+    # Flatpak module
+    nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=latest";
+
+    # Home Manager (tracking master; can pin a release if you prefer)
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    home-manager,
-    nix-flatpak,
-    ...
-  } @ inputs: let
+  outputs = { self, nixpkgs, home-manager, nix-flatpak, ... } @ inputs:
+  let
     inherit (self) outputs;
-  in {
-    # NixOS configuration entrypoint
-    # Available through 'nixos-rebuild --flake .#your-hostname'
+  in
+  {
     nixosConfigurations = {
-      # FIXME replace with your hostname
       tigers-desktop = nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit inputs outputs;};
-        # > Our main nixos configuration file <
-        modules = [
-        nix-flatpak.nixosModules.nix-flatpak
-  ./searx-ng.nix
-        ./configuration.nix];
-      };
-    };
+        system = "x86_64-linux";
+        specialArgs = { inherit inputs outputs; };
 
-     #Standalone home-manager configuration entrypoint
-    # Available through 'home-manager --flake .#your-username@your-hostname'
-    homeConfigurations = {
-      # FIXME replace with your username@hostname
-      "jacek@tigers-desktop" = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux; # Home-manager requires 'pkgs' instance
-        extraSpecialArgs = {inherit inputs outputs;};
-        # > Our main home-manager configuration file <
-        modules = [./home.nix];
+        modules = [
+          # Flatpak support
+          nix-flatpak.nixosModules.nix-flatpak
+
+          # Home Manager integration
+          home-manager.nixosModules.home-manager
+
+          # Your existing system modules
+          ./searx-ng.nix
+          ./configuration.nix
+
+          # Home Manager user configuration (wrapper for home.nix)
+          ./home-users.nix
+        ];
       };
     };
-    
   };
 }

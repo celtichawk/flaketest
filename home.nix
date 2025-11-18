@@ -3,10 +3,10 @@
 home.username = "jacek";
 home.homeDirectory = "/home/jacek";
 home.sessionVariables = {
-WINEPREFIX = "/home/harley/gamestuff64";
+WINEPREFIX = "/home/jacek/games/wine";
 EDITOR = "mousepad";
 };
-programs.zoxide.enable = true;
+programs.zoxide.enable = false;
 programs.direnv= {
 enable = true;
 nix-direnv.enable = true;
