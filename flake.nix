@@ -1,42 +1,53 @@
 {
-  description = "Your NixOS configuration with Home Manager and Flatpak";
+  description = "Your integrated NixOS and Home Manager config";
 
   inputs = {
-    # Nixpkgs
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-
-    # Flatpak module
     nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=latest";
-
-    # Home Manager (tracking master; can pin a release if you prefer)
-    home-manager.url = "github:nix-community/home-manager";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      # This ensures home-manager uses the same version of nixpkgs as your system
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, nix-flatpak, ... } @ inputs:
+  outputs = { self, nixpkgs, home-manager, nix-flatpak, ... } @ inputs: 
   let
     inherit (self) outputs;
-  in
-  {
+  in {
     nixosConfigurations = {
+      # This is your main desktop entry point
       tigers-desktop = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
         specialArgs = { inherit inputs outputs; };
-
         modules = [
-          # Flatpak support
           nix-flatpak.nixosModules.nix-flatpak
-
-          # Home Manager integration
-          home-manager.nixosModules.home-manager
-
-          # Your existing system modules
           ./searx-ng.nix
+#./piper.nix
           ./configuration.nix
 
-          # Home Manager user configuration (wrapper for home.nix)
-          ./home-users.nix
+          # --- Integration Starts Here ---
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.jacek = import ./home.nix;
+            
+            # This allows home.nix to access flake inputs (like for the wrapper script)
+            home-manager.extraSpecialArgs = { inherit inputs outputs; };
+          }
+          # --- Integration Ends Here ---
         ];
+      };
+    };
+
+    # You can keep this for other machines or standalone use, 
+    # but 'tigers-desktop' will now ignore this and use the version above.
+    homeConfigurations = {
+      "jacek@tigers-desktop" = home-manager.lib.homeManagerConfiguration {
+        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        extraSpecialArgs = { inherit inputs outputs; };
+        modules = [ ./home.nix ];
       };
     };
   };

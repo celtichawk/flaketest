@@ -51,7 +51,7 @@ LC_NUMERIC = "en_GB.UTF-8";
     LC_TELEPHONE = "en_GB.UTF-8";
     LC_TIME = "en_GB.UTF-8";
   };
-  services.logmein-hamachi.enable = false;
+#  services.logmein-hamachi.enable = false;
 services.gvfs.enable = true;
 
 services.flatpak.enable = true;
@@ -73,7 +73,6 @@ services.xserver.displayManager.lightdm.greeters.slick.enable = true;
 #services.xserver.desktopManager.mate.enable = true;
 #services.xserver.desktopManager.xfce.enable = true;
 #services.xserver.windowManager.i3.enable = true;
-#services.xserver.windowManager.fluxbox.enable = true;
 #services.xserver.desktopManager.gnome.enable = true;
 
 #services.desktopManager.plasma6.enable = true;
@@ -116,6 +115,7 @@ environment.variables = {
 GTK_MODULES = "gail:atk-bridge:canberra-gtk-module";
 ACCESSIBILITY_ENABLED = "1";
 };
+#  virtualisation.waydroid.enable = true;
 #   virtualisation.virtualbox.host.enable = true;
 #   virtualisation.virtualbox.host.enableExtensionPack = true;
 virtualisation.docker.enable = true;
@@ -196,7 +196,14 @@ libnotify
 file
 firefox
 distrobox
-(pidgin.override { plugins = [ pidginPackages.purple-discord pidginPackages.purple-plugin-pack ]; })
+(pidgin.override { 
+  plugins = [ 
+    pidginPackages.purple-discord 
+    (pidginPackages.purple-plugin-pack.overrideAttrs (oldAttrs: {
+      NIX_CFLAGS_COMPILE = (oldAttrs.NIX_CFLAGS_COMPILE or "") + " -Wno-error=incompatible-pointer-types";
+    }))
+  ]; 
+})
 appimage-run
 podman
 pipe-viewer
@@ -204,7 +211,7 @@ mpv
 epub2txt2
     pkgs.epr
 pkgs.yt-dlp
-brave
+koboldcpp
 steam-run
 w3m
 tesseract
@@ -216,14 +223,14 @@ espeak-ng
 prismlauncher
 flite
 alsa-utils
-xfce.mousepad
+pkgs.mousepad
 nwg-drawer
 lxterminal
-valkey
-xfce.xfce4-notifyd
+pkgs.xfce4-notifyd
 xwayland-satellite
 nodejs
   ];
+
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -245,12 +252,10 @@ programs.niri.enable = true;
 
   # Enable the OpenSSH daemon.
    services.openssh.enable = true;
+
 #services.locate.enable = true;
 #services.mullvad-vpn.enable = true;
 #services.ollama.enable = true;
-services.redis.enable = true;
-services.redis.port = 6379;
-services.redis.bind = "127.0.0.1";
 
 #services.open-webui.enable = true;
 #services.open-webui.port = 11111;

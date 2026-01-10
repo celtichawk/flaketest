@@ -1,0 +1,5 @@
+#!/bin/sh
+echo "$1" | /run/current-system/sw/bin/steam-run \
+/home/jacek/Documents/flaketest/piper/piper \
+--model /home/jacek/Documents/flaketest/piper/voices/en_US-amy-medium.onnx \
+--output_raw | /run/current-system/sw/bin/aplay -r 22050 -f S16_LE -t raw
