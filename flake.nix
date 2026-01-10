@@ -23,7 +23,6 @@
         modules = [
           nix-flatpak.nixosModules.nix-flatpak
           ./searx-ng.nix
-#./piper.nix
           ./configuration.nix
 
           # --- Integration Starts Here ---
