@@ -1,4 +1,5 @@
-{ config, pkgs, ... }:
+# 1. Add 'osConfig' to the arguments list here
+{ config, pkgs, osConfig, ... }: 
 
 {
   home.username = "jacek";
@@ -10,14 +11,13 @@
     EDITOR = "mousepad";
   };
 
-  # Everything piper-related (xdg.configFile) has been moved to piper.nix
-  
   home.packages = [ ]; 
 
   programs.zsh = {
     enable = true;
     shellAliases = {
-      nixswitch = "sudo nixos-rebuild switch --flake '/home/jacek/Documents/flaketest#tigers-desktop'";
+      # 2. Use the osConfig variable to dynamically grab the hostname
+      nixswitch = "sudo nixos-rebuild switch --flake '/home/jacek/Documents/flaketest#${osConfig.networking.hostName}'";
       nixclean  = "sudo nix-collect-garbage -d";
     };
   };
@@ -26,6 +26,5 @@
   programs.zoxide.enable = false;
   nixpkgs.config.allowUnfree = true;
   
-  # Keep this as your original install version (e.g., "23.11" or "24.11")
   home.stateVersion = "24.11"; 
 }
