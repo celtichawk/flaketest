@@ -24,7 +24,7 @@
 
   programs.direnv.enable = true;
   programs.zoxide.enable = false;
-  nixpkgs.config.allowUnfree = true;
+#  nixpkgs.config.allowUnfree = true;
   
   home.stateVersion = "24.11"; 
 }

@@ -22,7 +22,7 @@
         specialArgs = { inherit inputs outputs; };
         modules = [
           nix-flatpak.nixosModules.nix-flatpak
-          ./searx-ng.nix
+#          ./searx-ng.nix
           ./configuration.nix
 
           # --- Integration Starts Here ---

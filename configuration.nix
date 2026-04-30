@@ -32,8 +32,26 @@ nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   # Enable networking
   networking.networkmanager.enable = true;
-  xdg.portal.enable = true;
-xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+#Portal things:
+
+xdg.portal = {
+  enable = true;
+  # Niri 0.11 on Unstable needs these specifically to resolve backend call failures
+  extraPortals = [ 
+    pkgs.xdg-desktop-portal-gtk
+    pkgs.xdg-desktop-portal-gnome 
+  ];
+  config = {
+    common.default = [ "gtk" ];
+    niri.default = [ "gnome" "gtk" ]; # Use gnome for the pipewire-connection logic
+  };
+};
+
+# Force the environment variables so the portal can find PipeWire
+systemd.user.extraConfig = ''
+  DefaultEnvironment="XDG_CURRENT_DESKTOP=niri"
+'';
+
   # Set your time zone.
   time.timeZone = "Europe/London";
 
@@ -70,7 +88,7 @@ services.avahi = {
   services.xserver.displayManager.lightdm.enable = true;
 services.xserver.displayManager.lightdm.greeters.slick.enable = true;
 #services.xserver.displayManager.sddm.wayland.enable = true;
-#services.xserver.desktopManager.mate.enable = true;
+services.xserver.desktopManager.mate.enable = true;
 #services.xserver.desktopManager.xfce.enable = true;
 #services.xserver.windowManager.i3.enable = true;
 #services.xserver.desktopManager.gnome.enable = true;
@@ -78,7 +96,7 @@ services.xserver.displayManager.lightdm.greeters.slick.enable = true;
 #services.desktopManager.plasma6.enable = true;
 systemd.services."getty@tty1".enable = false;
 systemd.services."autovt@tty1".enable = false;
-services.displayManager.defaultSession = "niri";
+services.displayManager.defaultSession = "mate";
 services.gnome.at-spi2-core.enable = true;
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -102,6 +120,7 @@ services.gnome.at-spi2-core.enable = true;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
+wireplumber.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
     # If you want to use JACK applications, uncomment this
@@ -114,6 +133,7 @@ services.gnome.at-spi2-core.enable = true;
 environment.variables = {
 GTK_MODULES = "gail:atk-bridge:canberra-gtk-module";
 ACCESSIBILITY_ENABLED = "1";
+QT_LINUX_ACCESSIBILITY_ALWAYS_ON = "1";
 };
 #  virtualisation.waydroid.enable = true;
 #   virtualisation.virtualbox.host.enable = true;
@@ -163,7 +183,7 @@ enable = true;
   users.users.jacek = {
     isNormalUser = true;
     description = "jace kattalakis";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "docker"];
     packages = with pkgs; [
       firefox
     #  thunderbird
@@ -191,19 +211,11 @@ unrar
 p7zip
 git
 gh
-pulseaudio
+#pulseaudio
 libnotify
 file
 firefox
 distrobox
-(pidgin.override { 
-  plugins = [ 
-    pidginPackages.purple-discord 
-    (pidginPackages.purple-plugin-pack.overrideAttrs (oldAttrs: {
-      NIX_CFLAGS_COMPILE = (oldAttrs.NIX_CFLAGS_COMPILE or "") + " -Wno-error=incompatible-pointer-types";
-    }))
-  ]; 
-})
 appimage-run
 podman
 pipe-viewer
@@ -211,24 +223,23 @@ mpv
 epub2txt2
     pkgs.epr
 pkgs.yt-dlp
-koboldcpp
 steam-run
 w3m
 tesseract
 tintin
-quickemu
-legcord
+#webcord
 espeak
 espeak-ng
-prismlauncher
 flite
 alsa-utils
 pkgs.mousepad
 nwg-drawer
 lxterminal
 pkgs.xfce4-notifyd
-xwayland-satellite
-nodejs
+#xwayland-satellite
+#nodejs
+pipewire
+wireplumber
   ];
 
 
@@ -236,7 +247,7 @@ nodejs
   # started in user sessions.
   # programs.mtr.enable = true;
 #programs.sway.enable = true;
-programs.niri.enable = true;
+#programs.niri.enable = true;
   # programs.gnupg.agent = {
   #   enable = true;
   #   enableSSHSupport = true;
