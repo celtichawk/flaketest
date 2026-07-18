@@ -11,7 +11,14 @@
     EDITOR = "mousepad";
   };
 
-  home.packages = [ ]; 
+  home.packages = [ 
+    (pkgs.pidgin.override {
+      plugins = with pkgs.pidginPackages; [
+        purple-discord
+        purple-slack
+      ];
+    })
+  ];
 
   programs.zsh = {
     enable = true;

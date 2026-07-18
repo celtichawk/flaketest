@@ -48,9 +48,9 @@ xdg.portal = {
 };
 
 # Force the environment variables so the portal can find PipeWire
-systemd.user.extraConfig = ''
-  DefaultEnvironment="XDG_CURRENT_DESKTOP=niri"
-'';
+#systemd.user.extraConfig = ''
+#  DefaultEnvironment="XDG_CURRENT_DESKTOP=niri"
+#'';
 
   # Set your time zone.
   time.timeZone = "Europe/London";
@@ -88,7 +88,7 @@ services.avahi = {
   services.xserver.displayManager.lightdm.enable = true;
 services.xserver.displayManager.lightdm.greeters.slick.enable = true;
 #services.xserver.displayManager.sddm.wayland.enable = true;
-services.xserver.desktopManager.mate.enable = true;
+#services.xserver.desktopManager.mate.enable = true;
 #services.xserver.desktopManager.xfce.enable = true;
 #services.xserver.windowManager.i3.enable = true;
 #services.xserver.desktopManager.gnome.enable = true;
@@ -96,7 +96,7 @@ services.xserver.desktopManager.mate.enable = true;
 #services.desktopManager.plasma6.enable = true;
 systemd.services."getty@tty1".enable = false;
 systemd.services."autovt@tty1".enable = false;
-services.displayManager.defaultSession = "mate";
+services.displayManager.defaultSession = "niri";
 services.gnome.at-spi2-core.enable = true;
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -227,7 +227,7 @@ steam-run
 w3m
 tesseract
 tintin
-#webcord
+vesktop
 espeak
 espeak-ng
 flite
@@ -236,18 +236,22 @@ pkgs.mousepad
 nwg-drawer
 lxterminal
 pkgs.xfce4-notifyd
-#xwayland-satellite
-#nodejs
+xwayland-satellite
+nodejs
 pipewire
 wireplumber
+brave
   ];
+
+
+
 
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
 #programs.sway.enable = true;
-#programs.niri.enable = true;
+programs.niri.enable = true;
   # programs.gnupg.agent = {
   #   enable = true;
   #   enableSSHSupport = true;
