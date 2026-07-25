@@ -227,7 +227,7 @@ steam-run
 w3m
 tesseract
 tintin
-vesktop
+webcord
 espeak
 espeak-ng
 flite
@@ -240,7 +240,6 @@ xwayland-satellite
 nodejs
 pipewire
 wireplumber
-brave
   ];
 
 
