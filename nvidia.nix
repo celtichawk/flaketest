@@ -2,29 +2,26 @@
 { config, pkgs, ... }:
 
 {
-  # 1. Allow unfree packages for NVIDIA drivers and CUDA toolkits
-  nixpkgs.config.allowUnfree = true;
+  # 1. Enable CUDA support across nixpkgs (allowUnfree is already in configuration.nix)
+  nixpkgs.config.cudaSupport = true;
 
-  # 2. Add NVIDIA driver module
+  # 2. Register the NVIDIA video driver module
   services.xserver.videoDrivers = [ "nvidia" ];
 
-  # 3. Hardware Graphics (OpenGL / Vulkan)
-  hardware.graphics = {
-    enable = true;
-    enable32Bit = true; # Critical for Steam and 32-bit games
-  };
+  # 3. Add 32-bit graphics support (enable = true is already in configuration.nix)
+  hardware.graphics.enable32Bit = true;
 
-  # 4. NVIDIA Driver Configuration
+  # 4. Driver settings tailored for RTX 50-series / 40-series
   hardware.nvidia = {
     modesetting.enable = true;
     powerManagement.enable = false;
     powerManagement.finegrained = false;
-    open = true; # Open kernel modules for modern RTX series
+    open = true; # Open kernel modules work great for modern desktop cards
     nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
+    package = config.boot.kernelPackages.nvidiaPackages.latest;
   };
 
-  # 5. CUDA Binary Cache Configuration (prevents hours of compiling on unstable)
+  # 5. CUDA Binary Cache setup
   nix.settings = {
     substituters = [
       "https://cache.nixos-cuda.org"
@@ -34,18 +31,20 @@
     ];
   };
 
-  # 6. Wayland & Driver Session Variables for Niri
+  # 6. Session Variables for Niri / Wayland
   environment.sessionVariables = {
-    GBM_BACKEND = "nvidia-drm";
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
     LIBVA_DRIVER_NAME = "nvidia";
-    NIXOS_OZONE_WL = "1"; # Modern Wayland support for Electron/Brave apps
+    NIXOS_OZONE_WL = "1";
+    __GL_GSYNC_ALLOWED = "1";
+    __GL_VRR_ALLOWED = "1";
   };
 
-  # 7. GPU-Accelerated LLM Backend & CUDA utilities
-  environment.systemPackages = [
-    (pkgs.koboldcpp.override { config.cudaSupport = true; })
-    pkgs.cudaPackages.cudatoolkit
-    pkgs.clinfo
+  # 7. Add CUDA & Monitoring Tools to system packages
+  environment.systemPackages = with pkgs; [
+    koboldcpp
+    cudaPackages.cudatoolkit
+    clinfo
+    nvtopPackages.nvidia
   ];
 }
